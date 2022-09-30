@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Auth {
-	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
+	private static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
 		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 	
 	private Database database;
@@ -37,7 +37,7 @@ public class Auth {
 			database = new Database();
 		}
 		try {
-			ResultSet resultSet = database.executeSelect("SELECT * FROM users WHERE email = '" + getEmail() + "'");
+			ResultSet resultSet = database.executeSelect("SELECT * FROM usuario WHERE email = '" + getEmail() + "'");
 			while (resultSet.next()) {
 				String password = resultSet.getString("senha");
 				if (password.equals(getPassword())) {

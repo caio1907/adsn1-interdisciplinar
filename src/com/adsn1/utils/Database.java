@@ -39,7 +39,7 @@ public class Database {
             
             if (!databaseHasExists) {
             	new MigrationDB(this);
-            	executeCUD("INSERT INTO users (nome, email, senha) VALUES ('Admin', 'admin@email.com', '123456')");
+            	new SeedsDB(this);
             }
             
             System.out.println("Conexão com o banco de dados realizada com sucesso!");
