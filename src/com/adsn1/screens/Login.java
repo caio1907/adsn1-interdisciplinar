@@ -15,6 +15,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Login extends JFrame {
 
@@ -24,6 +26,7 @@ public class Login extends JFrame {
 	private JTextField inputEmail;
 	private JLabel lblSenha;
 	private JPasswordField inputPassword;
+	private JLabel label;
 
 	/**
 	 * Launch the application.
@@ -46,6 +49,8 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
+		setResizable(false);
+		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 259, 307);
 		contentPane = new JPanel();
@@ -55,6 +60,7 @@ public class Login extends JFrame {
 		contentPane.setLayout(null);
 		
 		inputEmail = new JTextField();
+		inputEmail.setText("admin@email.com");
 		inputEmail.setBounds(40, 50, 165, 19);
 		contentPane.add(inputEmail);
 		inputEmail.setColumns(10);
@@ -68,45 +74,61 @@ public class Login extends JFrame {
 		contentPane.add(lblSenha);
 		
 		inputPassword = new JPasswordField();
+		inputPassword.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					entrar();
+				}
+			}
+		});
 		inputPassword.setBounds(40, 126, 165, 19);
 		contentPane.add(inputPassword);
 		
 		JButton btnEntrar = new JButton("Entrar");
 		btnEntrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (auth == null) {
-					auth = new Auth();
-				}
-				auth.setEmail(inputEmail.getText());
-				auth.setPassword(new String(inputPassword.getPassword()));
-				if (inputEmail.getText().isEmpty() || inputEmail.getText().isBlank()) {
-					JOptionPane.showMessageDialog(contentPane, "Preencha o e-mail!");
-					inputEmail.requestFocus();
-					return;
-				}
-				if (inputPassword.getPassword().length == 0) {
-					JOptionPane.showMessageDialog(contentPane, "Preencha a senha");
-					inputPassword.requestFocus();
-					return;
-				}
-				if (!auth.validateEmail()) {
-					JOptionPane.showMessageDialog(contentPane, "E-mail inválido!");
-					return;
-				}
-				try {
-					if(!auth.login()) {
-						JOptionPane.showMessageDialog(contentPane, "Erro ao realizar login.\nVerifique os logs");
-						return;
-					}
-				} catch (Exception exception) {
-					JOptionPane.showMessageDialog(contentPane, exception.getMessage());
-					return;
-				}
-				new PDV().setVisible(true);
-				dispose();
+				entrar();
 			}
 		});
 		btnEntrar.setBounds(58, 200, 117, 25);
 		contentPane.add(btnEntrar);
+		
+		label = new JLabel("123456");
+		label.setBounds(40, 147, 70, 15);
+		contentPane.add(label);
+	}
+	
+	private void entrar() {
+		if (auth == null) {
+			auth = new Auth();
+		}
+		auth.setEmail(inputEmail.getText());
+		auth.setPassword(new String(inputPassword.getPassword()));
+		if (inputEmail.getText().isEmpty() || inputEmail.getText().isBlank()) {
+			JOptionPane.showMessageDialog(contentPane, "Preencha o e-mail!");
+			inputEmail.requestFocus();
+			return;
+		}
+		if (inputPassword.getPassword().length == 0) {
+			JOptionPane.showMessageDialog(contentPane, "Preencha a senha");
+			inputPassword.requestFocus();
+			return;
+		}
+		if (!auth.validateEmail()) {
+			JOptionPane.showMessageDialog(contentPane, "E-mail inválido!");
+			return;
+		}
+		try {
+			if(!auth.login()) {
+				JOptionPane.showMessageDialog(contentPane, "Erro ao realizar login.\nVerifique os logs");
+				return;
+			}
+		} catch (Exception exception) {
+			JOptionPane.showMessageDialog(contentPane, exception.getMessage());
+			return;
+		}
+		new PDV().setVisible(true);
+		dispose();
 	}
 }

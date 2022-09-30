@@ -1,60 +1,127 @@
 package com.adsn1.screens;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JDesktopPane;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PDV extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PDV frame = new PDV();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private JDesktopPane desktopPane;
 
 	/**
 	 * Create the frame.
 	 */
 	public PDV() {
+		setBackground(Color.GRAY);
+		setTitle("PDV");
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 600, 500);
 		
 		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBackground(Color.DARK_GRAY);
 		setJMenuBar(menuBar);
 		
-		JMenu mnCadastro = new JMenu("Cadastro");
+		JMenu mnCadastro = new JMenu("Produtos");
+		mnCadastro.setForeground(Color.WHITE);
 		menuBar.add(mnCadastro);
 		
-		JMenuItem mntmProdutos = new JMenuItem("Produtos");
-		mnCadastro.add(mntmProdutos);
+		JMenuItem mntmProdutosCadastrar = new JMenuItem("Cadastrar");
+		mnCadastro.add(mntmProdutosCadastrar);
 		
-		JMenuItem mntmClientes = new JMenuItem("Clientes");
-		mnCadastro.add(mntmClientes);
+		JMenuItem mntmProdutosEditar = new JMenuItem("Editar");
+		mnCadastro.add(mntmProdutosEditar);
 		
-		JMenuItem mntmTiposDePagamentos = new JMenuItem("Tipos de Pagamentos");
-		mnCadastro.add(mntmTiposDePagamentos);
+		JMenuItem mntmProdutosExcluir = new JMenuItem("Excluir");
+		mnCadastro.add(mntmProdutosExcluir);
+		
+		JMenuItem mntmProdutosListar = new JMenuItem("Buscar");
+		mnCadastro.add(mntmProdutosListar);
+		
+		JMenu mnClientes = new JMenu("Clientes");
+		mnClientes.setForeground(Color.WHITE);
+		menuBar.add(mnClientes);
+		
+		JMenuItem mntmClientesCadastrar = new JMenuItem("Cadastrar");
+		mnClientes.add(mntmClientesCadastrar);
+		
+		JMenuItem mntmClientesEditar = new JMenuItem("Editar");
+		mnClientes.add(mntmClientesEditar);
+		
+		JMenuItem mntmClientesExcluir = new JMenuItem("Excluir");
+		mnClientes.add(mntmClientesExcluir);
+		
+		JMenuItem mntmClientesListar = new JMenuItem("Buscar");
+		mnClientes.add(mntmClientesListar);
+		
+		JMenu mnTiposDePagamento = new JMenu("Tipos de Pagamento");
+		mnTiposDePagamento.setForeground(Color.WHITE);
+		menuBar.add(mnTiposDePagamento);
+		
+		JMenuItem mntmTiposDePagamentoCadastrar = new JMenuItem("Cadastrar");
+		mnTiposDePagamento.add(mntmTiposDePagamentoCadastrar);
+		
+		JMenuItem mntmTiposDePagamentoEditar = new JMenuItem("Editar");
+		mnTiposDePagamento.add(mntmTiposDePagamentoEditar);
+		
+		JMenuItem mntmTiposDePagamentoExcluir = new JMenuItem("Excluir");
+		mnTiposDePagamento.add(mntmTiposDePagamentoExcluir);
+		
+		JMenuItem mntmTiposDePagamentoListar = new JMenuItem("Buscar");
+		mnTiposDePagamento.add(mntmTiposDePagamentoListar);
+		
+		JMenu mnRelatrios = new JMenu("Relatórios");
+		mnRelatrios.setForeground(Color.WHITE);
+		menuBar.add(mnRelatrios);
+		
+		JMenuItem mntmRelatoriosVendas = new JMenuItem("Vendas");
+		mnRelatrios.add(mntmRelatoriosVendas);
+		
+		JMenu mnExemplo = new JMenu("Exemplo");
+		mnExemplo.setForeground(Color.WHITE);
+		menuBar.add(mnExemplo);
+		
+		JMenuItem mntmTelaExemplo = new JMenuItem("Tela Exemplo");
+		mntmTelaExemplo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TelaExemplo telaExemplo = new TelaExemplo();
+				desktopPane.add(telaExemplo);
+				telaExemplo.setVisible(true);
+			}
+		});
+		mnExemplo.add(mntmTelaExemplo);
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		
+		desktopPane = new JDesktopPane();
+		desktopPane.setBounds(12, 0, 422, 249);
+		contentPane.add(desktopPane);
 		setLocationRelativeTo(null);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setResizable(false);
+        GroupLayout gl_contentPane = new GroupLayout(contentPane);
+        gl_contentPane.setHorizontalGroup(
+        	gl_contentPane.createParallelGroup(Alignment.LEADING)
+        		.addComponent(desktopPane, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+        );
+        gl_contentPane.setVerticalGroup(
+        	gl_contentPane.createParallelGroup(Alignment.LEADING)
+        		.addComponent(desktopPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+        );
+        desktopPane.setLayout(null);
+        contentPane.setLayout(gl_contentPane);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+	}
+	public JDesktopPane getDesktopPane() {
+		return desktopPane;
 	}
 }

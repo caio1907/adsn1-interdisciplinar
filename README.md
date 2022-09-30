@@ -24,6 +24,3 @@
 - Adicione um comentário relacionado a tela nova ```git commit -m "Tela nova de cadastro de ..."```
 - Suba as alterações na branch criada ```git push origin feature/(NovaTela)```**sem parênteses**
 - Por fim, abra a PR (Pull Request) acessando o link que será exibido após a execução do comando anterior.
-
-## Autores
-![|Caio Lima](https://github.com/caio1907.png?size=36) ![Taylor Cristofer](https://github.com/taylorcristofer.png?size=36)
