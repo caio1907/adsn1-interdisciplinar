@@ -14,7 +14,7 @@
 
 ### Criando uma tela nova
 - Botão direito do mouse no pacote 'com.adsn1.screens' depois em New -> Other... (Ctrl + N);
-- Pesquise por JFrame, selecionar a opção JFrame e clique em Finish
+- Pesquise por JInternalFrame, selecione a opção filtrada e clique em Finish
 - Dê um nome para tela e clique em Finish.
 
 ### Subindo a tela nova ou alterações no código
