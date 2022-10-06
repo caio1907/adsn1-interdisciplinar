@@ -100,18 +100,7 @@ public class PDV extends JFrame {
 		mntmTelaExemplo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				TelaExemplo telaExemplo = TelaExemplo.getScreen();
-				JInternalFrame[] frames = desktopPane.getAllFrames();
-				for (int i = 0; i < frames.length; i++) {
-					JInternalFrame frame = frames[i];
-					if (frame.getClass() == telaExemplo.getClass()) {
-						frame.setVisible(true);
-						alignWindowInCenter(frame);
-						return;
-					}
-				}
-				desktopPane.add(telaExemplo);
-				telaExemplo.setVisible(true);
-				alignWindowInCenter(telaExemplo);
+				abrirJanela(telaExemplo);
 			}
 		});
 		mnExemplo.add(mntmTelaExemplo);
@@ -135,13 +124,38 @@ public class PDV extends JFrame {
         contentPane.setLayout(gl_contentPane);
 	}
 	
+	/**
+	 * Função para abrir as telas
+	 *
+	 * @param tela
+	 */
+	private void abrirJanela(Component tela) {
+		JInternalFrame[] frames = desktopPane.getAllFrames();
+		for (int i = 0; i < frames.length; i++) {
+			JInternalFrame frame = frames[i];
+			if (frame.getClass() == tela.getClass()) {
+				frame.setVisible(true);
+				alignWindowInCenter(frame);
+				return;
+			}
+		}
+		desktopPane.add(tela);
+		tela.setVisible(true);
+		alignWindowInCenter(tela);
+	}
+
+	/**
+	 * Função para alinhar a janela ao centro
+	 *
+	 * @param comp
+	 */
 	private void alignWindowInCenter(Component comp) {
 		Dimension desktopSize = desktopPane.getSize();
         Dimension jInternalFrameSize = comp.getSize();
         comp.setLocation((desktopSize.width - jInternalFrameSize.width)/2,
             (desktopSize.height- jInternalFrameSize.height)/2);
 	}
-	
+
 	public JDesktopPane getDesktopPane() {
 		return desktopPane;
 	}
