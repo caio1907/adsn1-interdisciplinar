@@ -1,6 +1,7 @@
 package com.adsn1.screens;
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -9,6 +10,8 @@ import javax.swing.JDesktopPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JToolBar;
@@ -52,6 +55,8 @@ public class PDV extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 500);
+		setLocationRelativeTo(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBackground(Color.DARK_GRAY);
@@ -119,9 +124,8 @@ public class PDV extends JFrame {
 		JMenuItem mntmTelaExemplo = new JMenuItem("Cadastro de Pedidos");
 		mntmTelaExemplo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				TelaExemplo telaExemplo = new TelaExemplo();
-				desktopPane.add(telaExemplo);
-				telaExemplo.setVisible(true);
+				TelaExemplo telaExemplo = TelaExemplo.getScreen();
+				abrirJanela(telaExemplo);
 			}
 		});
 		mnExemplo.add(mntmTelaExemplo);
@@ -132,7 +136,6 @@ public class PDV extends JFrame {
 		desktopPane = new JDesktopPane();
 		desktopPane.setBounds(12, 0, 422, 249);
 		contentPane.add(desktopPane);
-		setLocationRelativeTo(null);
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
         gl_contentPane.setHorizontalGroup(
         	gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -300,8 +303,40 @@ public class PDV extends JFrame {
         desktopPane.add(txtDadosCliente);
         
         contentPane.setLayout(gl_contentPane);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
+	
+	/**
+	 * Função para abrir as telas
+	 *
+	 * @param tela
+	 */
+	private void abrirJanela(Component tela) {
+		JInternalFrame[] frames = desktopPane.getAllFrames();
+		for (int i = 0; i < frames.length; i++) {
+			JInternalFrame frame = frames[i];
+			if (frame.getClass() == tela.getClass()) {
+				frame.setVisible(true);
+				alignWindowInCenter(frame);
+				return;
+			}
+		}
+		desktopPane.add(tela);
+		tela.setVisible(true);
+		alignWindowInCenter(tela);
+	}
+
+	/**
+	 * Função para alinhar a janela ao centro
+	 *
+	 * @param comp
+	 */
+	private void alignWindowInCenter(Component comp) {
+		Dimension desktopSize = desktopPane.getSize();
+        Dimension jInternalFrameSize = comp.getSize();
+        comp.setLocation((desktopSize.width - jInternalFrameSize.width)/2,
+            (desktopSize.height- jInternalFrameSize.height)/2);
+	}
+
 	public JDesktopPane getDesktopPane() {
 		return desktopPane;
 	}
