@@ -2,8 +2,7 @@ package com.adsn1.types;
 
 import java.util.Date;
 
-public class Cliente {
-	private int id;
+public class Cliente extends Common {
 	private String nome;
 	private String email;
 	private Date datanascimento;
@@ -13,15 +12,7 @@ public class Cliente {
 	private String end_bairro;
 	private String end_cidade;
 	private String end_uf;
-	private Date data_criacao;
-	private Date data_atualizacao;
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
+
 	public String getNome() {
 		return nome;
 	}
@@ -76,16 +67,4 @@ public class Cliente {
 	public void setEnd_uf(String end_uf) {
 		this.end_uf = end_uf;
 	}
-	public Date getData_criacao() {
-		return data_criacao;
-	}
-	public void setData_criacao(Date data_criacao) {
-		this.data_criacao = data_criacao;
-	}
-	public Date getData_atualizacao() {
-		return data_atualizacao;
-	}
-	public void setData_atualizacao(Date data_atualizacao) {
-		this.data_atualizacao = data_atualizacao;
-	}	
 }

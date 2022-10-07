@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.adsn1.types.Usuario;
 import com.adsn1.utils.Auth;
 
 import javax.swing.JTextField;
@@ -103,8 +104,9 @@ public class Login extends JFrame {
 		if (auth == null) {
 			auth = new Auth();
 		}
-		auth.setEmail(inputEmail.getText());
-		auth.setPassword(new String(inputPassword.getPassword()));
+		Usuario usuario = new Usuario();
+		usuario.setEmail(inputEmail.getText());
+		usuario.setSenha(new String(inputPassword.getPassword()));
 		if (inputEmail.getText().isEmpty() || inputEmail.getText().isBlank()) {
 			JOptionPane.showMessageDialog(contentPane, "Preencha o e-mail!");
 			inputEmail.requestFocus();
@@ -115,12 +117,12 @@ public class Login extends JFrame {
 			inputPassword.requestFocus();
 			return;
 		}
-		if (!auth.validateEmail()) {
+		if (!auth.validateEmail(usuario.getEmail())) {
 			JOptionPane.showMessageDialog(contentPane, "E-mail inválido!");
 			return;
 		}
 		try {
-			if(!auth.login()) {
+			if(!auth.login(usuario)) {
 				JOptionPane.showMessageDialog(contentPane, "Erro ao realizar login.\nVerifique os logs");
 				return;
 			}
