@@ -18,7 +18,7 @@
 - Dê um nome para tela e clique em Finish.
 
 ### Subindo a tela nova ou alterações no código
-- Crie uma branch ```git branch -b feature/(NovaTela)``` **sem parênteses**
+- Crie uma branch ```git checkout -b feature/(NovaTela)``` **sem parênteses**
 - Adicione o(s) arquivo(s) novo(s) ```git add src/*```
 - Verifique se os adicionados corresponde ao(s) criado(s) ```git status```
 - Adicione um comentário relacionado a tela nova ```git commit -m "Tela nova de cadastro de ..."```
