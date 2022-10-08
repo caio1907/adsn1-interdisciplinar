@@ -43,7 +43,7 @@ public class PDV extends JFrame {
 		ImageIcon mnOperacaoImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/systems.png"));
 		Image mnOperacaoImage = mnOperacaoImageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
 		mnOperacao.setIcon(new ImageIcon(mnOperacaoImage));
-		mnOperacao.setForeground(Color.BLACK);
+		mnOperacao.setForeground(Color.WHITE);
 		menuBar.add(mnOperacao);
 
 		JMenuItem mntmVenda = new JMenuItem("Venda");
@@ -62,20 +62,20 @@ public class PDV extends JFrame {
 		ImageIcon mnCadastroImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/editing.png"));
 		Image mnCadastroImage = mnCadastroImageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
 		mnCadastro.setIcon(new ImageIcon(mnCadastroImage));
-		mnCadastro.setForeground(new Color(0, 0, 0));
+		mnCadastro.setForeground(Color.WHITE);
 		menuBar.add(mnCadastro);
 
 		JMenuItem mntmCadastroProdutos = new JMenuItem("Produtos");
 		mntmCadastroProdutos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				CadProdutos cadProdutos = new CadProdutos();
-//				abrirJanela(cadProdutos);
+				CadProdutos cadProdutos = new CadProdutos();
+				abrirJanela(cadProdutos);
 			}
 		});
 		ImageIcon mntmCadastroProdutosImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/box.png"));
 		Image mntmCadastroProdutosImage = mntmCadastroProdutosImageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
 		mntmCadastroProdutos.setIcon(new ImageIcon(mntmCadastroProdutosImage));
-		mntmCadastroProdutos.setForeground(new Color(0, 0, 0));
+		mntmCadastroProdutos.setForeground(Color.BLACK);
 		mnCadastro.add(mntmCadastroProdutos);
 
 		JMenuItem mntmCadastroClientes = new JMenuItem("Clientes");
@@ -101,7 +101,7 @@ public class PDV extends JFrame {
 		ImageIcon mntmCadastroTipoPagamentosImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/cards.png"));
 		Image mntmCadastroTipoPagamentosImage = mntmCadastroTipoPagamentosImageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
 		mntmCadastroTipoPagamentos.setIcon(new ImageIcon(mntmCadastroTipoPagamentosImage));
-		mntmCadastroTipoPagamentos.setForeground(new Color(0, 0, 0));
+		mntmCadastroTipoPagamentos.setForeground(Color.BLACK);
 		mnCadastro.add(mntmCadastroTipoPagamentos);
 		contentPane = new JPanel();
 
