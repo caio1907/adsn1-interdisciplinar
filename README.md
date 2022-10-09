@@ -19,7 +19,7 @@
 
 ### Subindo a tela nova ou alterações no código
 - Crie uma branch ```git checkout -b feature/(NovaTela)``` **sem parênteses**
-- Adicione o(s) arquivo(s) novo(s) ```git add src/com/ads1/screens/NomeDoArquivoDaTela.java```
+- Adicione o(s) arquivo(s) novo(s) ```git add src/com/adsn1/screens/NomeDoArquivoDaTela.java```
 - Adicione um comentário relacionado a tela nova ```git commit -m "Tela nova de cadastro de ..."```
 - Suba as alterações na branch criada ```git push origin feature/(NovaTela)```**sem parênteses**
 - Por fim, abra a PR (Pull Request) acessando o link que será exibido após a execução do comando anterior.
