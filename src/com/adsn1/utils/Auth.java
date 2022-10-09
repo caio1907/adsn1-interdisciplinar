@@ -1,52 +1,33 @@
 package com.adsn1.utils;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.adsn1.controllers.UsuarioController;
+import com.adsn1.types.Usuario;
 
 public class Auth {
 	private static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
 		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 	
-	private Database database;
+	private UsuarioController usuarioController;
 	
-	private String email;
-	private String password;
-	
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
+	public Auth() {
+		this.usuarioController = new UsuarioController();
 	}
 	
-	public boolean validateEmail() {
-		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(getEmail());
+	public boolean validateEmail(String email) {
+		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
         return matcher.find();
 	}
 	
-	public boolean login() throws Exception {
-		if (database == null) {
-			database = new Database();
-		}
-		try {
-			ResultSet resultSet = database.executeSelect("SELECT * FROM usuario WHERE email = '" + getEmail() + "'");
-			while (resultSet.next()) {
-				String password = resultSet.getString("senha");
-				if (password.equals(getPassword())) {
-					return true;
-				}
-			}
-		} catch (SQLException e) {
-			System.out.println("Falha ao realizar o login.");
-			e.printStackTrace();
+	public boolean login(Usuario usuarioLogin) throws Exception {
+		Usuario usuario = usuarioController.getByEmail(usuarioLogin.getEmail());
+		if (usuario.getSenha().equals(usuarioLogin.getSenha())) {
+			usuario.setUltimo_login(new Date());
+			usuarioController.save(usuario);
+			return true;
 		}
 		throw new Exception("Usuário ou senha incorretos");
 	}

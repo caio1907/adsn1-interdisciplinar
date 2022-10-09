@@ -27,17 +27,17 @@ public class SeedsDB {
 				+ ");");
 		
 		// Tipos de pagamento
-		database.executeCUD("INSERT INTO tipo_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
+		database.executeCUD("INSERT INTO tipos_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
 				+ "'Pix', 0, '2022-09-29 22:33:05', '2022-09-29 22:33:05')");
-		database.executeCUD("INSERT INTO tipo_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
+		database.executeCUD("INSERT INTO tipos_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
 				+ "'Dinheiro', 0, '2022-09-29 22:33:05', '2022-09-29 22:33:05')");
-		database.executeCUD("INSERT INTO tipo_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
+		database.executeCUD("INSERT INTO tipos_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
 				+ "'Cartão Mastercard - Débito', 1.2, '2022-09-29 22:33:05', '2022-09-29 22:33:05')");
-		database.executeCUD("INSERT INTO tipo_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
+		database.executeCUD("INSERT INTO tipos_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
 				+ "'Cartão Mastercard - Crédito', 1.85, '2022-09-29 22:33:05', '2022-09-29 22:33:05')");
-		database.executeCUD("INSERT INTO tipo_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
+		database.executeCUD("INSERT INTO tipos_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
 				+ "'Cartão Visa - Débito', 1.5, '2022-09-29 22:33:05', '2022-09-29 22:33:05')");
-		database.executeCUD("INSERT INTO tipo_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
+		database.executeCUD("INSERT INTO tipos_de_pagamento (descricao, taxa, data_criacao, data_atualizacao) VALUES ("
 				+ "'Cartão Visa - Crédito', 2.2, '2022-09-29 22:33:05', '2022-09-29 22:33:05')");
 		
 		// Produtos
@@ -49,12 +49,12 @@ public class SeedsDB {
 				+ "'Top vermelho - Colcci', '78945465', 5, 19.90, '2022-09-29 22:33:05', '2022-09-29 22:33:05');");
 		
 		// Vendas
-		database.executeCUD("INSERT INTO venda (cliente, total, tipo_pagamento, data_criacao, data_atualizacao) VALUES ("
-				+ "1, 69.98, 4, '2022-09-29 22:33:05', '2022-09-29 22:33:05');");
-		database.executeCUD("INSERT INTO venda (cliente, total, tipo_pagamento, data_criacao, data_atualizacao) VALUES ("
-				+ "2, 19.90, 1, '2022-09-29 22:33:05', '2022-09-29 22:33:05');");
-		database.executeCUD("INSERT INTO venda (cliente, total, tipo_pagamento, data_criacao, data_atualizacao) VALUES ("
-				+ "2, 124.89, 2, '2022-09-29 22:33:05', '2022-09-29 22:33:05');");
+		database.executeCUD("INSERT INTO venda (cliente, total, vendedor, tipo_pagamento, data_criacao, data_atualizacao) VALUES ("
+				+ "1, 69.98, 1, 4, '2022-09-29 22:33:05', '2022-09-29 22:33:05');");
+		database.executeCUD("INSERT INTO venda (cliente, total, vendedor, tipo_pagamento, data_criacao, data_atualizacao) VALUES ("
+				+ "2, 19.90, 1, 1, '2022-09-29 22:33:05', '2022-09-29 22:33:05');");
+		database.executeCUD("INSERT INTO venda (cliente, total, vendedor, tipo_pagamento, data_criacao, data_atualizacao) VALUES ("
+				+ "2, 124.89, 1, 2, '2022-09-29 22:33:05', '2022-09-29 22:33:05');");
 		
 		// Vendas - Itens
 		database.executeCUD("INSERT INTO venda_item (id_venda, produto, valor_unitario, quantidade, data_criacao, data_atualizacao) VALUES ("
