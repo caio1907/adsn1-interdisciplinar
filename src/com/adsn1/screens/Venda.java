@@ -13,19 +13,26 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import java.awt.Component;
-import java.beans.PropertyVetoException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableModel;
 
 public class Venda extends JInternalFrame {
+	private static Venda screen = null;
 	private static final long serialVersionUID = 1L;
 	private JTextField tF_Valor;
 	private JTable table;
 	private JTextField textField;
 	private JTextField txtQuantidade;
 	private JTextField textField_1;
+	
+	public static Venda getScreen() {
+		if (screen == null) {
+			screen = new Venda();
+		}
+		return screen;
+	}
 
 	/**
 	 * Create the frame.
@@ -34,11 +41,6 @@ public class Venda extends JInternalFrame {
 		setTitle("Vendas");
 		setBounds(100, 100, 600, 500);
 		setClosable(true);
-		try {
-			setMaximum(true);
-		} catch (PropertyVetoException e) {
-			e.printStackTrace();
-		}
 		
 		Box hBox_Cliente = Box.createHorizontalBox();
 		hBox_Cliente.setBorder(null);

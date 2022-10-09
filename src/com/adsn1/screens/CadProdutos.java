@@ -10,20 +10,22 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Component;
-import java.beans.PropertyVetoException;
 
 public class CadProdutos extends JInternalFrame {
+	private static CadProdutos screen = null;
 	private static final long serialVersionUID = 1L;
+	
+	public static CadProdutos getScreen() {
+		if (screen == null) {
+			screen = new CadProdutos();
+		}
+		return screen;
+	}
 
 	/**
 	 * Create the frame.
 	 */
 	public CadProdutos() {
-		try {
-			setMaximum(true);
-		} catch (PropertyVetoException e) {
-			e.printStackTrace();
-		}
 		setClosable(true);
 		setTitle("Cadastro de Produtos");
 		setBounds(100, 100, 600, 500);

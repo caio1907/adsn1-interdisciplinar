@@ -10,8 +10,8 @@ import javax.swing.JDesktopPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import java.awt.Dimension;
@@ -94,8 +94,8 @@ public class PDV extends JFrame {
 		JMenuItem mntmCadastroTipoPagamentos = new JMenuItem("Tipos de Pagamento");
 		mntmCadastroTipoPagamentos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				CadTiposDePagamento cadTiposDePagamento = new CadTiposDePagamento();
-//				abrirJanela(cadTiposDePagamento);
+				CadTipoDePagamento cadTipoDePagamento = new CadTipoDePagamento();
+				abrirJanela(cadTipoDePagamento);
 			}
 		});
 		ImageIcon mntmCadastroTipoPagamentosImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/cards.png"));
@@ -134,31 +134,38 @@ public class PDV extends JFrame {
 	 *
 	 * @param tela
 	 */
-	private void abrirJanela(Component tela) {
+	private void abrirJanela(JInternalFrame tela) {
 		JInternalFrame[] frames = desktopPane.getAllFrames();
 		for (int i = 0; i < frames.length; i++) {
 			JInternalFrame frame = frames[i];
 			if (frame.getClass() == tela.getClass()) {
 				frame.setVisible(true);
-				alignWindowInCenter(frame);
+				maximizarEColocarNaFrente(frame);
 				return;
 			}
 		}
 		getDesktopPane().add(tela);
 		tela.setVisible(true);
-		alignWindowInCenter(tela);
+		maximizarEColocarNaFrente(tela);
 	}
 
 	/**
-	 * Função para alinhar a janela ao centro
+	 * Função para maximizar e colocar a janela na frente das outras
 	 *
 	 * @param comp
 	 */
-	private void alignWindowInCenter(Component comp) {
+	private void maximizarEColocarNaFrente(JInternalFrame comp) {
 		Dimension desktopSize = desktopPane.getSize();
         Dimension jInternalFrameSize = comp.getSize();
         comp.setLocation((desktopSize.width - jInternalFrameSize.width)/2,
             (desktopSize.height- jInternalFrameSize.height)/2);
+        try {
+			comp.setMaximum(true);
+		} catch (PropertyVetoException e) {
+			e.printStackTrace();
+		}
+        comp.toFront();
+        comp.show();
 	}
 
 	public JDesktopPane getDesktopPane() {
