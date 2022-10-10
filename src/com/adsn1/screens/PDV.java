@@ -33,7 +33,7 @@ public class PDV extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 500);
 		setLocationRelativeTo(null);
-        	setExtendedState(JFrame.MAXIMIZED_BOTH);
+    	setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBackground(Color.DARK_GRAY);
@@ -81,8 +81,8 @@ public class PDV extends JFrame {
 		JMenuItem mntmCadastroClientes = new JMenuItem("Clientes");
 		mntmCadastroClientes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				CadClientes cadClientes = new CadClientes();
-//				abrirJanela(cadClientes);
+				CadClientes cadClientes = new CadClientes();
+				abrirJanela(cadClientes);
 			}
 		});
 		ImageIcon mntmCadastroClientesImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/customers.png"));
@@ -103,6 +103,27 @@ public class PDV extends JFrame {
 		mntmCadastroTipoPagamentos.setIcon(new ImageIcon(mntmCadastroTipoPagamentosImage));
 		mntmCadastroTipoPagamentos.setForeground(Color.BLACK);
 		mnCadastro.add(mntmCadastroTipoPagamentos);
+		
+		JMenu mnRelatorios = new JMenu("Relatorios");
+		ImageIcon mnRelatoriosImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/document.png"));
+		Image mnRelatoriosImage = mnRelatoriosImageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+		mnRelatorios.setIcon(new ImageIcon(mnRelatoriosImage));
+		mnRelatorios.setForeground(Color.WHITE);
+		menuBar.add(mnRelatorios);
+		
+		JMenuItem mntmRelatorioVendas = new JMenuItem("Tipos de Pagamento");
+		mntmRelatorioVendas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				RelatorioVendas relatorioVendas = new RelatorioVendas();
+				abrirJanela(relatorioVendas);
+			}
+		});
+		ImageIcon mntmRelatorioVendasImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/document_sales.png"));
+		Image mntmRelatorioVendasImage = mntmRelatorioVendasImageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+		mntmRelatorioVendas.setIcon(new ImageIcon(mntmRelatorioVendasImage));
+		mntmRelatorioVendas.setForeground(Color.BLACK);
+		mnRelatorios.add(mntmRelatorioVendas);
+		
 		contentPane = new JPanel();
 
 		setContentPane(contentPane);

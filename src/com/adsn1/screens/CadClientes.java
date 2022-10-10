@@ -70,7 +70,7 @@ public class CadClientes extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public CadClientes() {
-		setTitle("Cadastro");
+		setTitle("Cadastro de Clientes");
 		setClosable(true);
 		setBounds(100, 100, 841, 600);
 		
