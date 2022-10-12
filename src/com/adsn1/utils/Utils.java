@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Utils {
 	
@@ -46,5 +47,10 @@ public class Utils {
 	public static String formatDateToString(Date date, boolean withTime) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy" + (withTime ? " HH:mm:ss" : ""));
 		return dateFormat.format(date);
+	}
+	
+	public static String formatMoney(double valor) {
+		Locale ptBr = new Locale("pt", "BR");
+		return NumberFormat.getCurrencyInstance(ptBr).format(valor);
 	}
 }

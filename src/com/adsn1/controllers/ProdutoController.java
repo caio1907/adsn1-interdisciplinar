@@ -15,7 +15,7 @@ public class ProdutoController {
 	}
 	
 	private ArrayList<Produto> getProdutoByQuery(String where) {
-		String condition = !where.isEmpty() ? ("where " + where) : "";
+		String condition = (where != null && !where.isEmpty()) ? ("where " + where) : "";
 		ResultSet resultSet = this.database.executeSelect("SELECT * FROM produto " + condition);
 		if (resultSet != null) {
 			try {

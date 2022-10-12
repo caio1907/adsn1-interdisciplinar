@@ -3,18 +3,48 @@ package com.adsn1.screens;
 import javax.swing.JInternalFrame;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import com.adsn1.controllers.ProdutoController;
+import com.adsn1.types.Produto;
+import com.adsn1.utils.Utils;
+
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
 
 public class CadProdutos extends JInternalFrame {
 	private static CadProdutos screen = null;
+	private ProdutoController produtoController;
+	private ArrayList<Produto> produtos;
+	private Produto produto;
+
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	
+	private JTable table;
+	private JTextField txtCodDeBarras;
+	private JTextField txtDescricao;
+	private JTextField txtValor;
+	private JTextField txtQtdEstoque;
+	private JButton btnNovo;
+	private JButton btnEditar;
+	private JButton btnSalvar;
+	private JButton btnCancelar;
+	private JTextField txtFiltro;
+
 	public static CadProdutos getScreen() {
 		if (screen == null) {
 			screen = new CadProdutos();
@@ -29,18 +59,20 @@ public class CadProdutos extends JInternalFrame {
 		setClosable(true);
 		setTitle("Cadastro de Produtos");
 		setBounds(100, 100, 600, 500);
+		this.produtoController = new ProdutoController();
+		loadData();
 
-		JTextField txtCodDeBarras = new JTextField();
-		txtCodDeBarras.setColumns(10);
+		txtCodDeBarras = new JTextField();
+		txtCodDeBarras.setEnabled(false);
 
-		JTextField txtDescricao = new JTextField();
-		txtDescricao.setColumns(10);
+		txtDescricao = new JTextField();
+		txtDescricao.setEnabled(false);
 
-		JTextField txtValor = new JTextField();
-		txtValor.setColumns(10);
+		txtValor = new JTextField();
+		txtValor.setEnabled(false);
 
-		JTextField txtQtdEstoque = new JTextField();
-		txtQtdEstoque.setColumns(10);
+		txtQtdEstoque = new JTextField();
+		txtQtdEstoque.setEnabled(false);
 
 		JLabel lblCodigoDeBarras = new JLabel("Código de barras");
 
@@ -50,35 +82,120 @@ public class CadProdutos extends JInternalFrame {
 
 		JLabel lblQtdEstoque = new JLabel("Em estoque");
 
-		JTextField txtFiltrar = new JTextField();
-		txtFiltrar.setColumns(10);
+		txtFiltro = new JTextField();
+		txtFiltro.setColumns(10);
 
-		JLabel lblFiltrar = new JLabel("Filtrar");
-
-		JTable table = new JTable();
-		table.setModel(new DefaultTableModel(
+		JLabel lblFiltro = new JLabel("Filtrar");
+		DefaultTableModel model = new DefaultTableModel(
 				new Object[][] {
-					{"1", "192168025", "Bermuda Jeans - PP", "350.00", "25"},
-					{"2", "786221038", "Cal\u00E7a Moletom - G", "150.00", "17"},
 				},
 				new String[] {
 						"Id", "C\u00F3d. de Barras", "Descri\u00E7\u00E3o", "Valor", "Qtd. Estoque"
 				}
-				) {
-			private static final long serialVersionUID = 1L;
-			public boolean isCellEditable(int row, int column) {
-				return false;
+				);
+		for (Produto produto : this.produtos) {
+			model.addRow(new Object [] {
+					produto.getId(),
+					produto.getCodigo_de_barras(),
+					produto.getDescricao(),
+					Utils.formatMoney(produto.getValor()),
+					produto.getQtd_estoque()
+			});
+		}
+
+		btnNovo = new JButton("Novo");
+		btnNovo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				habilitarEdicao(true);
+				limparCampos();
+			}
+		});
+		btnNovo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		btnEditar = new JButton("Editar");
+		btnEditar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getTxtCodDeBarras().setText(produto.getCodigo_de_barras());;
+				getTxtDescricao().setText(produto.getDescricao());
+				getTxtValor().setText(produto.getValor()+"");;
+				getTxtQtdEstoque().setText(produto.getQtd_estoque()+"");;
+				habilitarEdicao(true);
+			}
+		});
+		btnEditar.setEnabled(false);
+		btnEditar.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		btnSalvar = new JButton("Salvar");
+		btnSalvar.setEnabled(false);
+		btnSalvar.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
+			public void actionPerformed(ActionEvent e) {
+				if (!validarCampos()) {
+					JOptionPane.showMessageDialog(rootPane, "Preencha todos os campos");
+					return;
+				}
+				double valor;
+				int qtdEstoque;
+				try {
+					valor = Double.parseDouble(getTxtValor().getText());
+				} catch (NumberFormatException exception) {
+					JOptionPane.showMessageDialog(rootPane, "Campo valor inválido.");
+					getTxtValor().requestFocus();
+					return;
+				}
+				try {
+					qtdEstoque = Integer.parseInt(getTxtQtdEstoque().getText());
+				} catch (NumberFormatException exception) {
+					JOptionPane.showMessageDialog(rootPane, "Quantidade no estoque inválida");
+					getTxtQtdEstoque().requestFocus();
+					return;
+				}
+				if (produto == null) {
+					produto = new Produto();
+				}
+				produto.setCodigo_de_barras(getTxtCodDeBarras().getText());
+				produto.setDescricao(getTxtDescricao().getText());
+				produto.setValor(valor);
+				produto.setQtd_estoque(qtdEstoque);
+				
+				Produto produtoSalvo = produtoController.save(produto);
+				if (produto == null) {
+					JOptionPane.showMessageDialog(rootPane, "Erro ao salvar produto.\nEntre em contato com o administrador do sitema.");
+					return;
+				}
+				Long id = produto.getId();
+				if (id != null && id > 0) {
+					int selectedRow = getTable().getSelectedRow();
+					model.setValueAt(produto.getId(), selectedRow, 0);
+					model.setValueAt(produtoSalvo.getCodigo_de_barras(), selectedRow, 1);
+					model.setValueAt(produtoSalvo.getDescricao(), selectedRow, 2);
+					model.setValueAt(Utils.formatMoney(produtoSalvo.getValor()), selectedRow, 3);
+					model.setValueAt(produtoSalvo.getQtd_estoque(), selectedRow, 4);
+				} else {
+					model.addRow(new Object [] {
+							produtoSalvo.getId(),
+							produtoSalvo.getCodigo_de_barras(),
+							produtoSalvo.getDescricao(),
+							Utils.formatMoney(produtoSalvo.getValor()),
+							produtoSalvo.getQtd_estoque()
+					});
+				}
+				getTable().setModel(model);
+				habilitarEdicao(false);
+				limparCampos();
 			}
 		});
 
-		JButton btnCadastrar = new JButton("Cadastrar");
-		btnCadastrar.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		JButton btnEditar = new JButton("Editar");
-		btnEditar.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		JButton btnExcluir = new JButton("Excluir");
-		btnExcluir.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setEnabled(false);
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				limparCampos();
+				habilitarEdicao(false);
+			}
+		});
+		
+		JScrollPane scrollPane = new JScrollPane();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -86,52 +203,40 @@ public class CadProdutos extends JInternalFrame {
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(10)
-							.addComponent(lblFiltrar, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
+							.addComponent(lblFiltro, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(10)
-							.addComponent(txtFiltrar, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
+							.addComponent(txtFiltro, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(10)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(lblCodigoDeBarras, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-									.addGap(2))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(txtCodDeBarras, GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-									.addGap(14)))
-							.addGap(2)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(txtDescricao, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-									.addGap(6))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(lblDescricao, GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-									.addGap(17)))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(lblCodigoDeBarras, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtCodDeBarras, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
+							.addGap(5)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(txtDescricao, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(lblValor, GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-									.addGap(20))
-								.addComponent(txtValor, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE))
+								.addComponent(lblValor)
+								.addComponent(txtValor, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(lblQtdEstoque, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-									.addGap(6))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(txtQtdEstoque, GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
-									.addGap(22)))
-							.addGap(152))
+								.addComponent(txtQtdEstoque, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblQtdEstoque, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
-							.addComponent(table, GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(btnCadastrar)
+							.addComponent(btnNovo)
 							.addGap(18)
 							.addComponent(btnEditar)
 							.addGap(18)
-							.addComponent(btnExcluir)))
+							.addComponent(btnSalvar)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(btnCancelar)))
+					.addGap(0))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -139,35 +244,139 @@ public class CadProdutos extends JInternalFrame {
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(6)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnCadastrar, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnNovo, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnEditar, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnExcluir, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnSalvar, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblCodigoDeBarras, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtCodDeBarras, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtDescricao, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(lblCodigoDeBarras, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(txtCodDeBarras, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(txtDescricao, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)))
+							.addGap(11)
+							.addComponent(lblFiltro, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+							.addComponent(txtFiltro, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+							.addGroup(groupLayout.createSequentialGroup()
+								.addComponent(lblQtdEstoque, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+								.addGap(26))
 							.addGroup(groupLayout.createSequentialGroup()
 								.addComponent(lblValor, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(txtValor, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-							.addGroup(groupLayout.createSequentialGroup()
-								.addComponent(lblQtdEstoque, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(txtQtdEstoque, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))))
-					.addGap(11)
-					.addComponent(lblFiltrar, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					.addComponent(txtFiltrar, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addComponent(table, GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+								.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+									.addComponent(txtValor, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+									.addComponent(txtQtdEstoque, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)))))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
 					.addContainerGap())
 		);
+		
+				// Disabilita edição da célula
+				table = new JTable() {
+					private static final long serialVersionUID = 1L;
+		
+					public boolean isCellEditable(int row, int column) {                
+						return false;
+					};
+				};
+				scrollPane.setViewportView(table);
+				table.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						int selectedRow = getTable().getSelectedRow();
+						if (selectedRow != -1) {
+							produto = produtos.get(selectedRow);
+							getBtnEditar().setEnabled(true);
+						}
+					}
+				});
+				table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				table.setModel(model);
 		getContentPane().setLayout(groupLayout);
+	}
+
+	private void loadData() {
+		ArrayList<Produto> produtos = this.produtoController.getAll();
+		this.produtos = produtos;
+	}
+
+	private void limparCampos() {
+		getTable().clearSelection();
+		getBtnEditar().setEnabled(false);
+		getTxtCodDeBarras().setText("");
+		getTxtDescricao().setText("");
+		getTxtValor().setText("");
+		getTxtQtdEstoque().setText("");
+	}
+
+	private void habilitarEdicao(boolean habilitar) {
+		getTable().setEnabled(!habilitar);
+		getBtnNovo().setEnabled(!habilitar);
+		getBtnSalvar().setEnabled(habilitar);
+		getBtnCancelar().setEnabled(habilitar);
+		getTxtFiltro().setEnabled(!habilitar);
+		getTxtCodDeBarras().setEnabled(habilitar);
+		getTxtDescricao().setEnabled(habilitar);
+		getTxtValor().setEnabled(habilitar);
+		getTxtQtdEstoque().setEnabled(habilitar);
+		if (habilitar) {
+			getTxtCodDeBarras().requestFocus();
+		} else {
+			getBtnNovo().requestFocus();
+		}
+	}
+	
+	private boolean validarCampos() {
+		JTextField[] fields = {
+				getTxtCodDeBarras(),
+				getTxtDescricao(),
+				getTxtValor(),
+				getTxtQtdEstoque()
+		};
+		for (JTextField field : fields) {
+			if (field.getText().isEmpty()) {
+				field.requestFocus();
+				return false;
+			}
+		}
+		return true;
+	}
+
+	protected JTable getTable() {
+		return table;
+	}
+	protected JButton getBtnNovo() {
+		return btnNovo;
+	}
+	protected JButton getBtnEditar() {
+		return btnEditar;
+	}
+	protected JButton getBtnSalvar() {
+		return btnSalvar;
+	}
+	protected JButton getBtnCancelar() {
+		return btnCancelar;
+	}
+	protected JTextField getTxtCodDeBarras() {
+		return txtCodDeBarras;
+	}
+	protected JTextField getTxtDescricao() {
+		return txtDescricao;
+	}
+	protected JTextField getTxtValor() {
+		return txtValor;
+	}
+	protected JTextField getTxtQtdEstoque() {
+		return txtQtdEstoque;
+	}
+	protected JTextField getTxtFiltro() {
+		return txtFiltro;
 	}
 }
