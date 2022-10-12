@@ -29,6 +29,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JScrollPane;
 
 
 public class CadTipoDePagamento extends JInternalFrame {
@@ -49,6 +50,7 @@ public class CadTipoDePagamento extends JInternalFrame {
 	private JButton btnSalvar;
 	private JButton btnCancelar;
 	private JTextField txtFiltro;
+	private JScrollPane scrollPane;
 
 	public static CadTipoDePagamento getScreen() {
 		if (screen == null) {
@@ -72,28 +74,9 @@ public class CadTipoDePagamento extends JInternalFrame {
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				habilitarEdicao(true);
+				limparCampos();
 			}
 		});
-
-		// Disabilita edição da célula
-		table = new JTable() {
-			private static final long serialVersionUID = 1L;
-
-			public boolean isCellEditable(int row, int column) {                
-				return false;
-			};
-		};
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int selectedRow = getTable().getSelectedRow();
-				if (selectedRow != -1) {
-					tipoDePagamento = tiposDePagamento.get(selectedRow);
-					getBtnEditar().setEnabled(true);
-				}
-			}
-		});
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		DefaultTableModel model = new DefaultTableModel(
 				new Object[][] {
 				},
@@ -108,7 +91,6 @@ public class CadTipoDePagamento extends JInternalFrame {
 					Utils.formatToDecimal(tipoDePagamento.getTaxa()),
 			});
 		}
-		table.setModel(model);
 		btnEditar = new JButton("Editar");
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -155,16 +137,19 @@ public class CadTipoDePagamento extends JInternalFrame {
 					getTxtDescricao().requestFocus();
 					return;
 				}
+				if (tipoDePagamento == null) {
+					tipoDePagamento = new TiposDePagamento();
+				}
 				tipoDePagamento.setDescricao(descricao);
 				tipoDePagamento.setTaxa(taxa);
-				
+
 				TiposDePagamento tipoDePagamentoSalvo = tiposDePagamentoController.save(tipoDePagamento);
 				if (tipoDePagamentoSalvo == null) {
 					JOptionPane.showMessageDialog(rootPane, "Erro ao salvar tipo de pagamento.\nEntre em contato com o administrador do sitema.");
 					return;
 				}
 				Long id = tipoDePagamento.getId();
-				if (id != null) {
+				if (id != null && id > 0) {
 					model.setValueAt(
 							tipoDePagamentoSalvo.getDescricao(),
 							table.getSelectedRow(),
@@ -182,8 +167,7 @@ public class CadTipoDePagamento extends JInternalFrame {
 				}
 				getTable().setModel(model);
 				habilitarEdicao(false);
-				getTxtDescricao().setText("");
-				getTxtTaxa().setText("");
+				limparCampos();
 			}
 		});
 
@@ -192,15 +176,13 @@ public class CadTipoDePagamento extends JInternalFrame {
 		btnCancelar.setFont(new Font("Dialog", Font.BOLD, 12));
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getTxtDescricao().setText("");
-				getTxtTaxa().setText("");
+				limparCampos();
 				habilitarEdicao(false);
 			}
 		});
 		btnCancelar.setEnabled(false);
 
 		final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
-		table.setRowSorter(sorter);
 
 		txtFiltro = new JTextField();
 		txtFiltro.setToolTipText("Pressione Enter para filtrar");
@@ -219,69 +201,94 @@ public class CadTipoDePagamento extends JInternalFrame {
 
 		JLabel lblBusque = new JLabel("Filtro");
 		lblBusque.setFont(new Font("Dialog", Font.BOLD, 12));
+
+		scrollPane = new JScrollPane();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+				groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(12)
-							.addComponent(btnNovo, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
-							.addGap(12)
-							.addComponent(btnEditar, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(btnSalvar, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
-							.addGap(12)
-							.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(txtFiltro)
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(1)
-									.addComponent(lblBusque, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE))))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(txtDescricao, GroupLayout.PREFERRED_SIZE, 193, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE))
-							.addGap(18)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(txtTaxa, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblTaxa, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(table, GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)))
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGap(12)
+										.addComponent(btnNovo, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
+										.addGap(12)
+										.addComponent(btnEditar, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(btnSalvar, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
+										.addGap(12)
+										.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE))
+								.addGroup(groupLayout.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE)
+												.addComponent(txtDescricao, GroupLayout.PREFERRED_SIZE, 193, GroupLayout.PREFERRED_SIZE))
+										.addGap(18)
+										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(txtTaxa, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblTaxa, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)))
+								.addGroup(groupLayout.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+												.addComponent(txtFiltro)
+												.addGroup(groupLayout.createSequentialGroup()
+														.addGap(1)
+														.addComponent(lblBusque, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)))))
+						.addGap(0))
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(12)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnNovo, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnEditar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnSalvar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblTaxa, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtTaxa, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-							.addGap(3))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtDescricao, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)))
-					.addGap(20)
-					.addComponent(lblBusque, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					.addGap(3)
-					.addComponent(txtFiltro, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addComponent(table, GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
-					.addContainerGap())
-		);
+						.addContainerGap()
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
+						.addContainerGap())
+				);
+		groupLayout.setVerticalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+						.addGap(12)
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(btnNovo, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnEditar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnSalvar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
+						.addGap(18)
+						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(lblTaxa, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+												.addComponent(txtTaxa, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+												.addComponent(txtDescricao, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
+										.addGap(3))
+								.addComponent(lblDescricao, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
+						.addGap(18)
+						.addComponent(lblBusque, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addGap(3)
+						.addComponent(txtFiltro, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+						.addContainerGap())
+				);
+
+		// Disabilita edição da célula
+		table = new JTable() {
+			private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			};
+		};
+		scrollPane.setViewportView(table);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int selectedRow = getTable().getSelectedRow();
+				if (selectedRow != -1) {
+					tipoDePagamento = tiposDePagamento.get(selectedRow);
+					getBtnEditar().setEnabled(true);
+				}
+			}
+		});
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setModel(model);
+		table.setRowSorter(sorter);
 		getContentPane().setLayout(groupLayout);
 		txtFiltro.addKeyListener(new KeyAdapter() {
 			@Override
@@ -295,13 +302,21 @@ public class CadTipoDePagamento extends JInternalFrame {
 			}
 		});
 	}
-	
+
 	private void loadData() {
 		ArrayList<TiposDePagamento> tiposDePagamento = this.tiposDePagamentoController.getAll();
 		this.tiposDePagamento = tiposDePagamento;
 	}
 
+	private void limparCampos() {
+		getTable().clearSelection();
+		getBtnEditar().setEnabled(false);
+		getTxtDescricao().setText("");
+		getTxtTaxa().setText("");
+	}
+
 	private void habilitarEdicao(boolean habilitar) {
+		getTable().setEnabled(!habilitar);
 		getBtnNovo().setEnabled(!habilitar);
 		getBtnSalvar().setEnabled(habilitar);
 		getBtnCancelar().setEnabled(habilitar);

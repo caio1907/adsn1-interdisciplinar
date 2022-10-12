@@ -33,6 +33,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.text.Format;
+import javax.swing.JScrollPane;
 
 
 public class CadClientes extends JInternalFrame {
@@ -60,6 +61,7 @@ public class CadClientes extends JInternalFrame {
 	private JTextField txtBairro;
 	private JTextField txtCidade;
 	private JTextField txtUF;
+	private JScrollPane scrollPane;
 
 	public static CadClientes getScreen() {
 		if (screen == null) {
@@ -86,26 +88,6 @@ public class CadClientes extends JInternalFrame {
 				habilitarEdicao(true);
 			}
 		});
-
-		// Disabilita edição da célula
-		table = new JTable() {
-			private static final long serialVersionUID = 1L;
-
-			public boolean isCellEditable(int row, int column) {                
-				return false;
-			};
-		};
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int selectedRow = getTable().getSelectedRow();
-				if (selectedRow != -1) {
-					cliente = clientes.get(selectedRow);
-					getBtnEditar().setEnabled(true);
-				}
-			}
-		});
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		DefaultTableModel model = new DefaultTableModel(
 				new Object[][] {},
 				new String[] {
@@ -120,7 +102,6 @@ public class CadClientes extends JInternalFrame {
 					cliente.getTelefone()
 			});
 		}
-		table.setModel(model);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.setEnabled(false);
@@ -177,11 +158,11 @@ public class CadClientes extends JInternalFrame {
 				cliente.setEnd_uf(getTxtUF().getText());
 				Cliente clienteSalvo = clienteController.save(cliente);
 				if (clienteSalvo == null) {
-					JOptionPane.showMessageDialog(rootPane, "Erro ao salvar os dados do cliente");
+					JOptionPane.showMessageDialog(rootPane, "Erro ao salvar os dados do cliente.\nEntre em contato com o administrador do sitema.");
 					return;
 				}
 				Long id = cliente.getId();
-				if (id != null) {
+				if (id != null && id > 0) {
 					int selectedRow = table.getSelectedRow();
 					model.setValueAt(clienteSalvo.getNome(), selectedRow, 1);
 					model.setValueAt(clienteSalvo.getEmail(), selectedRow, 2);
@@ -211,7 +192,6 @@ public class CadClientes extends JInternalFrame {
 		btnCancelar.setEnabled(false);
 
 		final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
-		table.setRowSorter(sorter);
 
 		txtFiltro = new JTextField();
 		txtFiltro.setToolTipText("Pressione Enter para filtrar");
@@ -297,6 +277,8 @@ public class CadClientes extends JInternalFrame {
 
 		JLabel lblUF = new JLabel("UF");
 		lblUF.setFont(new Font("Dialog", Font.BOLD, 12));
+
+		scrollPane = new JScrollPane();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
 				groupLayout.createParallelGroup(Alignment.LEADING)
@@ -358,7 +340,7 @@ public class CadClientes extends JInternalFrame {
 						.addContainerGap(681, Short.MAX_VALUE))
 				.addGroup(groupLayout.createSequentialGroup()
 						.addContainerGap()
-						.addComponent(table, GroupLayout.DEFAULT_SIZE, 807, Short.MAX_VALUE)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 807, Short.MAX_VALUE)
 						.addContainerGap())
 				);
 		groupLayout.setVerticalGroup(
@@ -411,9 +393,32 @@ public class CadClientes extends JInternalFrame {
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(txtFiltro, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(table, GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
 						.addContainerGap())
 				);
+
+		// Disabilita edição da célula
+		table = new JTable() {
+			private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			};
+		};
+		scrollPane.setViewportView(table);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int selectedRow = getTable().getSelectedRow();
+				if (selectedRow != -1) {
+					cliente = clientes.get(selectedRow);
+					getBtnEditar().setEnabled(true);
+				}
+			}
+		});
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setModel(model);
+		table.setRowSorter(sorter);
 		getContentPane().setLayout(groupLayout);
 		txtFiltro.addKeyListener(new KeyAdapter() {
 			@Override
@@ -451,6 +456,8 @@ public class CadClientes extends JInternalFrame {
 	}
 
 	private void limparCampos() {
+		getTable().clearSelection();
+		getBtnEditar().setEnabled(false);
 		getTxtNome().setText("");
 		getTxtEmail().setText("");
 		getTxtDataNascimento().setText("");
