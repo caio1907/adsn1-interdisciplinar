@@ -15,7 +15,7 @@ public class TiposDePagamentoController {
 	}
 	
 	private ArrayList<TiposDePagamento> getTiposDePagamentoByQuery(String where) {
-		String condition = !where.isEmpty() ? ("where " + where) : "";
+		String condition = (where != null && !where.isEmpty()) ? ("where " + where) : "";
 		ResultSet resultSet = this.database.executeSelect("SELECT * FROM tipos_de_pagamento " + condition);
 		if (resultSet != null) {
 			try {
@@ -80,8 +80,8 @@ public class TiposDePagamentoController {
 		Long id = tipoDePagamento.getId();
 		if (id != null && getById(tipoDePagamento.getId()) != null) {
 			database.executeCUD("UPDATE tipos_de_pagamento SET "
-					+ "descicao = '"+tipoDePagamento.getDescricao()+"',"
-					+ "taxa = "+tipoDePagamento.getTaxa()
+					+ "descricao = '"+tipoDePagamento.getDescricao()+"',"
+					+ "taxa = "+tipoDePagamento.getTaxa() + ", "
 					+ "data_atualizacao = CURRENT_TIMESTAMP "
 					+ "WHERE id = " + id);
 			return this.getById(id);

@@ -2,44 +2,54 @@ package com.adsn1.screens;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+
+import com.adsn1.controllers.TiposDePagamentoController;
+import com.adsn1.types.TiposDePagamento;
+import com.adsn1.utils.Utils;
+
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.awt.Font;
 import javax.swing.JFormattedTextField;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class CadTipoDePagamento extends JInternalFrame {
 	private static CadTipoDePagamento screen = null;
+	private TiposDePagamentoController tiposDePagamentoController;
+	private ArrayList<TiposDePagamento> tiposDePagamento;
+	private TiposDePagamento tipoDePagamento;
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTable table;
-	private JFormattedTextField doubleTaxa;
+	private JFormattedTextField txtTaxa;
 	private JTextField txtDescricao;
 	private JButton btnNovo;
 	private JButton btnEditar;
-	private JButton btnExcluir;
 	private JButton btnSalvar;
 	private JButton btnCancelar;
 	private JTextField txtFiltro;
-	
+
 	public static CadTipoDePagamento getScreen() {
 		if (screen == null) {
 			screen = new CadTipoDePagamento();
@@ -51,95 +61,147 @@ public class CadTipoDePagamento extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public CadTipoDePagamento() {
-		setTitle("Cadastro");
+		setTitle("Cadastro Tipos de Pagemento");
 		setClosable(true);
 		setBounds(100, 100, 700, 600);
-		
+		this.tiposDePagamentoController = new TiposDePagamentoController();
+		loadData();
+
 		btnNovo = new JButton("Novo");
 		btnNovo.setFont(new Font("Dialog", Font.BOLD, 12));
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				getDoubleTaxa().setEnabled(true);
-				getTxtDescricao().setEnabled(true);
-				getBtnCancelar().setEnabled(true);
-				getBtnSalvar().setEnabled(true);
-				getBtnNovo().setEnabled(false);
-				getTxtFiltro().setEnabled(false);
-				
+				habilitarEdicao(true);
 			}
 		});
-		
+
 		// Disabilita edição da célula
 		table = new JTable() {
 			private static final long serialVersionUID = 1L;
 
-	        public boolean isCellEditable(int row, int column) {                
-                return false;
-	        };
+			public boolean isCellEditable(int row, int column) {                
+				return false;
+			};
 		};
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int selectedRow = getTable().getSelectedRow();
+				if (selectedRow != -1) {
+					tipoDePagamento = tiposDePagamento.get(selectedRow);
+					getBtnEditar().setEnabled(true);
+				}
+			}
+		});
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		DefaultTableModel model = new DefaultTableModel(
-			new Object[][] {
-				{"Pix", "0.00"},
-				{"Dinheiro", "0.00"},
-				{"Credito - Mastercard", "1.35"},
-				{"Debito - Mastercard", "0.80"},
-				{"Credito - Visa", "1.24"},
-				{"Debito - Visa", "0.77"},
-			},
-			new String[] {
-				"Descri\u00E7\u00E3o", "Taxa"
-			}
-		);
+				new Object[][] {
+				},
+				new String[] {
+						"C\u00F3digo", "Descri\u00E7\u00E3o", "Taxa"
+				}
+				);
+		for (TiposDePagamento tipoDePagamento : this.tiposDePagamento) {
+			model.addRow(new Object [] {
+					tipoDePagamento.getId(),
+					tipoDePagamento.getDescricao(),
+					Utils.formatToDecimal(tipoDePagamento.getTaxa()),
+			});
+		}
 		table.setModel(model);
-		
 		btnEditar = new JButton("Editar");
+		btnEditar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getTxtDescricao().setText(tipoDePagamento.getDescricao());
+				getTxtTaxa().setText(tipoDePagamento.getTaxa()+"");
+				habilitarEdicao(true);
+			}
+		});
 		btnEditar.setEnabled(false);
 		btnEditar.setFont(new Font("Dialog", Font.BOLD, 12));
-		
-		btnExcluir = new JButton("Excluir");
-		btnExcluir.setFont(new Font("Dialog", Font.BOLD, 12));
-		btnExcluir.setEnabled(false);
-		
-		doubleTaxa = new JFormattedTextField();
-		doubleTaxa.setToolTipText("0,00%");
-		doubleTaxa.setEnabled(false);
-		doubleTaxa.setColumns(10);
-		
+
+		txtTaxa = new JFormattedTextField();
+		txtTaxa.setToolTipText("0.00");
+		txtTaxa.setEnabled(false);
+		txtTaxa.setColumns(10);
+
 		JLabel lblTaxa = new JLabel("Taxa");
 		lblTaxa.setFont(new Font("Dialog", Font.BOLD, 12));
-		
+
 		JLabel lblDescricao = new JLabel("Descrição");
 		lblDescricao.setFont(new Font("Dialog", Font.BOLD, 12));
-		
+
 		txtDescricao = new JTextField();
 		txtDescricao.setEnabled(false);
 		txtDescricao.setColumns(10);
-		
+
 		btnSalvar = new JButton("Salvar");
 		btnSalvar.setFont(new Font("Dialog", Font.BOLD, 12));
 		btnSalvar.setEnabled(false);
-		
-		
+		btnSalvar.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
+			public void actionPerformed(ActionEvent e) {
+				double taxa;
+				try {
+					taxa = Double.parseDouble(getTxtTaxa().getText());
+				} catch (NumberFormatException exception) {
+					JOptionPane.showMessageDialog(rootPane, "Campo taxa inválido.");
+					getTxtTaxa().requestFocus();
+					return;
+				}
+				String descricao = getTxtDescricao().getText();
+				if (descricao.isEmpty()) {
+					JOptionPane.showMessageDialog(rootPane, "Preencha o campo descrição.");
+					getTxtDescricao().requestFocus();
+					return;
+				}
+				tipoDePagamento.setDescricao(descricao);
+				tipoDePagamento.setTaxa(taxa);
+				
+				TiposDePagamento tipoDePagamentoSalvo = tiposDePagamentoController.save(tipoDePagamento);
+				if (tipoDePagamentoSalvo == null) {
+					JOptionPane.showMessageDialog(rootPane, "Erro ao salvar tipo de pagamento.\nEntre em contato com o administrador do sitema.");
+					return;
+				}
+				Long id = tipoDePagamento.getId();
+				if (id != null) {
+					model.setValueAt(
+							tipoDePagamentoSalvo.getDescricao(),
+							table.getSelectedRow(),
+							1);
+					model.setValueAt(
+							Utils.formatToDecimal(tipoDePagamentoSalvo.getTaxa()),
+							table.getSelectedRow(),
+							2);
+				} else {
+					model.addRow(new Object [] {
+							tipoDePagamentoSalvo.getId(),
+							tipoDePagamentoSalvo.getDescricao(),
+							Utils.formatToDecimal(tipoDePagamentoSalvo.getTaxa()),
+					});
+				}
+				getTable().setModel(model);
+				habilitarEdicao(false);
+				getTxtDescricao().setText("");
+				getTxtTaxa().setText("");
+			}
+		});
+
+
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setFont(new Font("Dialog", Font.BOLD, 12));
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getBtnNovo().setEnabled(true);
-				getBtnCancelar().setEnabled(false);
-				getBtnSalvar().setEnabled(false);
-				getTxtDescricao().setEnabled(false);
-				getDoubleTaxa().setEnabled(false);
-				getTxtFiltro().setEnabled(true);
+				getTxtDescricao().setText("");
+				getTxtTaxa().setText("");
+				habilitarEdicao(false);
 			}
 		});
 		btnCancelar.setEnabled(false);
-		
-		JLabel lblFiltro = new JLabel("");
-		
+
 		final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
 		table.setRowSorter(sorter);
-		
+
 		txtFiltro = new JTextField();
 		txtFiltro.setToolTipText("Pressione Enter para filtrar");
 		txtFiltro.addKeyListener(new KeyAdapter() {
@@ -154,7 +216,7 @@ public class CadTipoDePagamento extends JInternalFrame {
 			}
 		});
 		txtFiltro.setColumns(10);
-		
+
 		JLabel lblBusque = new JLabel("Filtro");
 		lblBusque.setFont(new Font("Dialog", Font.BOLD, 12));
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
@@ -167,9 +229,7 @@ public class CadTipoDePagamento extends JInternalFrame {
 							.addComponent(btnNovo, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
 							.addGap(12)
 							.addComponent(btnEditar, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-							.addGap(12)
-							.addComponent(btnExcluir, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-							.addGap(15)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(btnSalvar, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
 							.addGap(12)
 							.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE))
@@ -179,9 +239,7 @@ public class CadTipoDePagamento extends JInternalFrame {
 								.addComponent(txtFiltro)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGap(1)
-									.addComponent(lblBusque, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)))
-							.addGap(66)
-							.addComponent(lblFiltro, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
+									.addComponent(lblBusque, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE))))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -189,7 +247,7 @@ public class CadTipoDePagamento extends JInternalFrame {
 								.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE))
 							.addGap(18)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(doubleTaxa, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtTaxa, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblTaxa, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
@@ -203,7 +261,6 @@ public class CadTipoDePagamento extends JInternalFrame {
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(btnNovo, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnEditar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnExcluir, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnSalvar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnCancelar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
@@ -211,19 +268,16 @@ public class CadTipoDePagamento extends JInternalFrame {
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(lblTaxa, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(doubleTaxa, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+							.addComponent(txtTaxa, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 							.addGap(3))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(txtDescricao, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)))
 					.addGap(20)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblFiltro, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblBusque, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-							.addGap(3)
-							.addComponent(txtFiltro, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)))
+					.addComponent(lblBusque, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					.addGap(3)
+					.addComponent(txtFiltro, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
 					.addComponent(table, GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
 					.addContainerGap())
@@ -242,25 +296,37 @@ public class CadTipoDePagamento extends JInternalFrame {
 		});
 	}
 	
+	private void loadData() {
+		ArrayList<TiposDePagamento> tiposDePagamento = this.tiposDePagamentoController.getAll();
+		this.tiposDePagamento = tiposDePagamento;
+	}
 
-	protected JComponent getTxtDescricao() {
-		// TODO Auto-generated method stub
+	private void habilitarEdicao(boolean habilitar) {
+		getBtnNovo().setEnabled(!habilitar);
+		getBtnSalvar().setEnabled(habilitar);
+		getBtnCancelar().setEnabled(habilitar);
+		getTxtFiltro().setEnabled(!habilitar);
+		getTxtDescricao().setEnabled(habilitar);
+		getTxtTaxa().setEnabled(habilitar);
+		if (habilitar) {
+			getTxtDescricao().requestFocus();
+		} else {
+			getBtnNovo().requestFocus();
+		}
+	}
+
+
+	protected JTextField getTxtDescricao() {
 		return txtDescricao;
 	}
-
-	protected JComponent getDoubleTaxa() {
-		// TODO Auto-generated method stub
-		return doubleTaxa;
+	protected JTextField getTxtTaxa() {
+		return txtTaxa;
 	}
-
 	protected JButton getBtnNovo() {
 		return btnNovo;
 	}
 	protected JButton getBtnEditar() {
 		return btnEditar;
-	}
-	protected JButton getBtnExcluir() {
-		return btnExcluir;
 	}
 	protected JButton getBtnSalvar() {
 		return btnSalvar;
@@ -270,5 +336,8 @@ public class CadTipoDePagamento extends JInternalFrame {
 	}
 	protected JTextField getTxtFiltro() {
 		return txtFiltro;
+	}
+	protected JTable getTable() {
+		return table;
 	}
 }
