@@ -17,7 +17,7 @@ public class UsuarioController {
 	}
 	
 	private ArrayList<Usuario> getUsuarioByQuery(String where) {
-		String condition = !where.isEmpty() ? ("where " + where) : "";
+		String condition = (where != null && !where.isEmpty()) ? ("where " + where) : "";
 		ResultSet resultSet = this.database.executeSelect("SELECT * FROM usuario " + condition);
 		if (resultSet != null) {
 			try {
