@@ -16,7 +16,7 @@ public class ClienteController {
 	}
 	
 	private ArrayList<Cliente> getClienteByQuery(String where) {
-		String condition = !where.isEmpty() ? ("where " + where) : "";
+		String condition = (where != null && !where.isEmpty()) ? ("where " + where) : "";
 		ResultSet resultSet = this.database.executeSelect("SELECT * FROM cliente " + condition);
 		if (resultSet != null) {
 			try {
@@ -28,11 +28,11 @@ public class ClienteController {
 					cliente.setNome(resultSet.getString("nome"));
 					cliente.setEmail(resultSet.getString("email"));
 					cliente.setTelefone(resultSet.getString("telefone"));
-					cliente.setDatanascimento(resultSet.getDate("datanascimento"));
+					cliente.setDatanascimento(Utils.formatStringToDate(resultSet.getString("datanascimento")));
 					cliente.setEnd_logradouro(resultSet.getString("end_logradouro"));
 					cliente.setEnd_bairro(resultSet.getString("end_bairro"));
 					cliente.setEnd_complemento(resultSet.getString("end_complemento"));
-					cliente.setEnd_cidade(resultSet.getString("ent_cidade"));
+					cliente.setEnd_cidade(resultSet.getString("end_cidade"));
 					cliente.setEnd_uf(resultSet.getString("end_uf"));
 					cliente.setData_criacao(resultSet.getDate("data_criacao"));
 					cliente.setData_atualizacao(resultSet.getDate("data_atualizacao"));
@@ -91,7 +91,7 @@ public class ClienteController {
 					+ "nome = '"+cliente.getNome()+"',"
 					+ "email = '"+cliente.getEmail()+"',"
 					+ "telefone = '"+cliente.getTelefone()+"',"
-					+ "datanascimento = '"+cliente.getDatanascimento()+"',"
+					+ "datanascimento = '"+Utils.formatDateToSql(cliente.getDatanascimento())+"',"
 					+ "end_logradouro = '"+cliente.getEnd_logradouro()+"',"
 					+ "end_bairro = '"+cliente.getEnd_bairro()+"',"
 					+ "end_complemento = '"+cliente.getEnd_complemento()+"',"
