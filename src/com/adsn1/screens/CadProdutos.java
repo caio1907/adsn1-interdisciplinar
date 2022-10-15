@@ -128,7 +128,6 @@ public class CadProdutos extends JInternalFrame {
 		btnSalvar = new JButton("Salvar");
 		btnSalvar.setEnabled(false);
 		btnSalvar.addActionListener(new ActionListener() {
-			@SuppressWarnings("unused")
 			public void actionPerformed(ActionEvent e) {
 				if (!validarCampos()) {
 					JOptionPane.showMessageDialog(rootPane, "Preencha todos os campos");

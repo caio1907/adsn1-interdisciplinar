@@ -1,11 +1,13 @@
 package com.adsn1.types;
 
+import java.util.ArrayList;
+
 public class Venda extends Common {
 	private long cliente;
 	private long vendedor;
 	private double total;
 	private long tipo_pagamento;
-	private VendaItem[] vendaItem;
+	private ArrayList<VendaItem> vendaItem;
 
 	public long getCliente() {
 		return cliente;
@@ -31,10 +33,10 @@ public class Venda extends Common {
 	public void setTipo_pagamento(long tipo_pagamento) {
 		this.tipo_pagamento = tipo_pagamento;
 	}
-	public VendaItem[] getVendaItem() {
+	public ArrayList<VendaItem> getVendaItem() {
 		return vendaItem;
 	}
-	public void setVendaItem(VendaItem[] vendaItem) {
+	public void setVendaItem(ArrayList<VendaItem> vendaItem) {
 		this.vendaItem = vendaItem;
 	}
 }

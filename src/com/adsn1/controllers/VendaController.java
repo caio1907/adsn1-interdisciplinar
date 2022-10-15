@@ -74,22 +74,22 @@ public class VendaController {
 	}
 
 	/**
-	 * Cria ou atualiza o venda
+	 * Cria a venda
 	 * 
 	 * @param Venda
 	 * @return
 	 */
-	public boolean save(Venda venda, VendaItem[] vendaItem) {
+	public boolean save(Venda venda) {
 		database.executeCUD("INSERT INTO venda ("
 				+ "cliente, vendedor, total, tipo_pagamento) VALUES ("
-				+ ""+venda.getCliente()+", (SELECT id FROM usuario ORDER BY ultimo_login DESC LIMIT 1), "+venda.getTotal()+","
+				+ venda.getCliente()+", (SELECT id FROM usuario ORDER BY ultimo_login DESC LIMIT 1), "+venda.getTotal()+", "
 				+ venda.getTipo_pagamento()
 				+ ")");
-		for (int i = 0; i < vendaItem.length; i++) {
-			VendaItem item = vendaItem[i];
+		for (int i = 0; i < venda.getVendaItem().size(); i++) {
+			VendaItem item = venda.getVendaItem().get(i);
 			database.executeCUD("INSERT INTO venda_item (id_venda, produto, valor_unitario, quantidade) VALUES ("
-					+ item.getId_venda() + ", " + item.getProduto() + ", " + item.getValor_unitario() + ", "
-					+ item.getQtd_estoque() + ")");
+					+ "(SELECT id FROM venda ORDER BY data_criacao DESC LIMIT 1), " + item.getProduto() + ", " + item.getValor_unitario() + ", "
+					+ item.getQuantidade() + ")");
 		}
 		return true;
 	}

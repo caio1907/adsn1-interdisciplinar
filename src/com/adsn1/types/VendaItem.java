@@ -4,7 +4,7 @@ public class VendaItem extends Common {
 	private long id_venda;
 	private long produto;
 	private double valor_unitario;
-	private double qtd_estoque;
+	private double quantidade;
 	
 	public long getId_venda() {
 		return id_venda;
@@ -24,10 +24,10 @@ public class VendaItem extends Common {
 	public void setValor_unitario(double valor_unitario) {
 		this.valor_unitario = valor_unitario;
 	}
-	public double getQtd_estoque() {
-		return qtd_estoque;
+	public double getQuantidade() {
+		return quantidade;
 	}
-	public void setQtd_estoque(double qtd_estoque) {
-		this.qtd_estoque = qtd_estoque;
+	public void setQuantidade(double quantidade) {
+		this.quantidade = quantidade;
 	}
 }
