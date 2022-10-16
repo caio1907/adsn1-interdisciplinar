@@ -3,6 +3,7 @@ package com.adsn1.types;
 public class VendaItem extends Common {
 	private long id_venda;
 	private long produto;
+	private String produto_descricao;
 	private double valor_unitario;
 	private double quantidade;
 	
@@ -17,6 +18,12 @@ public class VendaItem extends Common {
 	}
 	public void setProduto(long produto) {
 		this.produto = produto;
+	}
+	public String getProduto_descricao() {
+		return produto_descricao;
+	}
+	public void setProduto_descricao(String produto_descricao) {
+		this.produto_descricao = produto_descricao;
 	}
 	public double getValor_unitario() {
 		return valor_unitario;

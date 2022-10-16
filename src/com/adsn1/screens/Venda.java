@@ -190,9 +190,8 @@ public class Venda extends JInternalFrame {
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(cbClientes, 0, 566, Short.MAX_VALUE)
+						.addComponent(cbClientes, Alignment.TRAILING, 0, 566, Short.MAX_VALUE)
 						.addComponent(scrollPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
-						.addComponent(lblBuscarProduto)
 						.addComponent(btnNewButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 159, GroupLayout.PREFERRED_SIZE)
 						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
@@ -202,9 +201,14 @@ public class Venda extends JInternalFrame {
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 								.addComponent(txtTotalAReceber)
 								.addComponent(lblTotalAReceber, GroupLayout.PREFERRED_SIZE, 126, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-							.addComponent(txtBuscarProduto, GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
-							.addGap(18)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(txtBuscarProduto, GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+									.addGap(18))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(lblBuscarProduto)
+									.addPreferredGap(ComponentPlacement.RELATED)))
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblQuantidadeProduto)
 								.addComponent(txtQuantidade, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)))
@@ -232,7 +236,7 @@ public class Venda extends JInternalFrame {
 					.addGap(18)
 					.addComponent(lblProdutos)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 						.addGroup(groupLayout.createSequentialGroup()
@@ -245,7 +249,7 @@ public class Venda extends JInternalFrame {
 							.addComponent(txtTotalAReceber, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 					.addGap(18)
 					.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
+					.addGap(23))
 		);
 		getContentPane().setLayout(groupLayout);
 	}
@@ -304,7 +308,7 @@ public class Venda extends JInternalFrame {
 		int linhas = getTable().getRowCount();
 		for (int i = 0; i < linhas; i++) {
 			String valor = getTable().getValueAt(i, 0).toString();
-			if (valor.equalsIgnoreCase(valor)) {
+			if (valor.equalsIgnoreCase(codBarras)) {
 				return i;
 			}
 		}

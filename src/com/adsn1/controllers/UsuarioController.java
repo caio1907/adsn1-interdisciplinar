@@ -3,7 +3,6 @@ package com.adsn1.controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.adsn1.types.Usuario;
 import com.adsn1.utils.Database;
@@ -88,14 +87,14 @@ public class UsuarioController {
 					+ "email = '"+usuario.getEmail()+"',"
 					+ "senha = '"+usuario.getSenha()+"',"
 					+ "ultimo_login = '"+Utils.formatDateToSql(usuario.getUltimo_login(), true)+"',"
-					+ "data_atualizacao = '"+Utils.formatDateToSql(new Date(), true)+"' "
+					+ "data_atualizacao = CURRENT_TIMESTAMP "
 					+ "WHERE id = " + id);
 			return this.getById(id);
 		} else {
 			database.executeCUD("INSERT INTO usuario ("
 					+ "nome, email, senha) VALUES ("
 					+ "'"+usuario.getNome()+"', '"+usuario.getEmail()+"',"
-					+ "'"+usuario.getSenha()+"', '"+usuario.getUltimo_login()+"'"
+					+ "'"+usuario.getSenha()+"', '"+Utils.formatDateToSql(usuario.getUltimo_login(), true)+"'"
 					+ ")");
 			return this.getByEmail(usuario.getEmail());
 		}

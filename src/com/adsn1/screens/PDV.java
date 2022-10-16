@@ -111,7 +111,7 @@ public class PDV extends JFrame {
 		mnRelatorios.setForeground(Color.WHITE);
 		menuBar.add(mnRelatorios);
 		
-		JMenuItem mntmRelatorioVendas = new JMenuItem("Tipos de Pagamento");
+		JMenuItem mntmRelatorioVendas = new JMenuItem("Vendas");
 		mntmRelatorioVendas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				RelatorioVendas relatorioVendas = new RelatorioVendas();
