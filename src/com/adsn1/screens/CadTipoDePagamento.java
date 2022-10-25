@@ -75,6 +75,7 @@ public class CadTipoDePagamento extends JInternalFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				habilitarEdicao(true);
 				limparCampos();
+				tipoDePagamento = null;
 			}
 		});
 		DefaultTableModel model = new DefaultTableModel(

@@ -124,6 +124,26 @@ public class PDV extends JFrame {
 		mntmRelatorioVendas.setForeground(Color.BLACK);
 		mnRelatorios.add(mntmRelatorioVendas);
 		
+		JMenu mnConfiguracoes = new JMenu("Configurações");
+		ImageIcon mnConfiguracoesImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/settings.png"));
+		Image mnConfiguracoesImage = mnConfiguracoesImageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+		mnConfiguracoes.setIcon(new ImageIcon(mnConfiguracoesImage));
+		mnConfiguracoes.setForeground(Color.WHITE);
+		menuBar.add(mnConfiguracoes);
+		
+		JMenuItem mntmConfiguracoes = new JMenuItem("Usuarios/Vendedores");
+		mntmConfiguracoes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CadUsuarios cadUsuarios = new CadUsuarios();
+				abrirJanela(cadUsuarios);
+			}
+		});
+		ImageIcon mntmConfiguracoesImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/users.png"));
+		Image mntmConfiguracoesImage = mntmConfiguracoesImageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+		mntmConfiguracoes.setIcon(new ImageIcon(mntmConfiguracoesImage));
+		mntmConfiguracoes.setForeground(Color.BLACK);
+		mnConfiguracoes.add(mntmConfiguracoes);
+		
 		contentPane = new JPanel();
 
 		setContentPane(contentPane);

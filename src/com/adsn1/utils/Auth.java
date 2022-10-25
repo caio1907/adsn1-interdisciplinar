@@ -24,7 +24,7 @@ public class Auth {
 	
 	public boolean login(Usuario usuarioLogin) throws Exception {
 		Usuario usuario = usuarioController.getByEmail(usuarioLogin.getEmail());
-		if (usuario.getSenha().equals(usuarioLogin.getSenha())) {
+		if (usuario != null && usuario.getSenha().equals(usuarioLogin.getSenha())) {
 			usuario.setUltimo_login(new Date());
 			usuarioController.save(usuario);
 			return true;

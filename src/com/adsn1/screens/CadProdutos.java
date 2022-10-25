@@ -108,6 +108,7 @@ public class CadProdutos extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				habilitarEdicao(true);
 				limparCampos();
+				produto = null;
 			}
 		});
 		btnNovo.setAlignmentX(Component.CENTER_ALIGNMENT);

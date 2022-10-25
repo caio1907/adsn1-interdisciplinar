@@ -94,7 +94,7 @@ public class UsuarioController {
 			database.executeCUD("INSERT INTO usuario ("
 					+ "nome, email, senha) VALUES ("
 					+ "'"+usuario.getNome()+"', '"+usuario.getEmail()+"',"
-					+ "'"+usuario.getSenha()+"', '"+Utils.formatDateToSql(usuario.getUltimo_login(), true)+"'"
+					+ "'"+usuario.getSenha()+"'"
 					+ ")");
 			return this.getByEmail(usuario.getEmail());
 		}
