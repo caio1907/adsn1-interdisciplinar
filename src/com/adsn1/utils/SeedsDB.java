@@ -10,8 +10,11 @@ public class SeedsDB {
 	
 	private void insertSeeds() {
 		// Usuario
-		database.executeCUD("INSERT INTO usuario (nome, email, senha) VALUES ('Admin', 'admin@email.com', '123456')");
+		database.executeCUD("INSERT INTO usuario (nome, email, senha) VALUES ('Suporte', 'admin@email.com', '123456')");
 		
+		if (!Utils.DEVELOP_MODE.equals("development")) {
+			return;
+		}
 		// Clientes
 		database.executeCUD("INSERT INTO cliente ("
 				+ "nome, email, datanascimento, telefone, end_logradouro, end_complemento,"

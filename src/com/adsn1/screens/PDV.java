@@ -3,6 +3,10 @@ package com.adsn1.screens;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+
+import com.adsn1.controllers.UsuarioController;
+import com.adsn1.types.Usuario;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -16,17 +20,20 @@ import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import java.awt.Dimension;
 import java.awt.Image;
+import javax.swing.JLabel;
 
 public class PDV extends JFrame {
-
+	private Usuario usuario;
+	private UsuarioController usuarioController;
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JDesktopPane desktopPane;
+	private JLabel lblBemVindo;
 
 	/**
 	 * Create the frame.
 	 */
-	public PDV() {
+	public PDV(String usuarioEmail) {
 		setBackground(Color.GRAY);
 		setTitle("PDV");
 		setResizable(false);
@@ -34,6 +41,8 @@ public class PDV extends JFrame {
 		setBounds(100, 100, 600, 500);
 		setLocationRelativeTo(null);
     	setExtendedState(JFrame.MAXIMIZED_BOTH);
+    	usuarioController = new UsuarioController();
+    	usuario = usuarioController.getByEmail(usuarioEmail);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBackground(Color.DARK_GRAY);
@@ -166,6 +175,10 @@ public class PDV extends JFrame {
         			.addContainerGap())
         );
         desktopPane.setLayout(null);
+        
+        lblBemVindo = new JLabel("Bem vindo " + usuario.getNome());
+        lblBemVindo.setBounds(12, 12, 230, 15);
+        desktopPane.add(lblBemVindo);
 
         contentPane.setLayout(gl_contentPane);
 	}
@@ -211,5 +224,8 @@ public class PDV extends JFrame {
 
 	public JDesktopPane getDesktopPane() {
 		return desktopPane;
+	}
+	protected JLabel getLblBemVindo() {
+		return lblBemVindo;
 	}
 }

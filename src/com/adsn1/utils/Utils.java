@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Utils {
-	
+	public static final String DEVELOP_MODE = "production";
+
 	public static String formatDateToSql(Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return dateFormat.format(date);

@@ -27,7 +27,6 @@ public class Login extends JFrame {
 	private JTextField inputEmail;
 	private JLabel lblSenha;
 	private JPasswordField inputPassword;
-	private JLabel label;
 
 	/**
 	 * Launch the application.
@@ -61,7 +60,7 @@ public class Login extends JFrame {
 		contentPane.setLayout(null);
 		
 		inputEmail = new JTextField();
-		inputEmail.setText("admin@email.com");
+		inputEmail.setText("");
 		inputEmail.setBounds(40, 50, 165, 19);
 		contentPane.add(inputEmail);
 		inputEmail.setColumns(10);
@@ -94,10 +93,6 @@ public class Login extends JFrame {
 		});
 		btnEntrar.setBounds(58, 200, 117, 25);
 		contentPane.add(btnEntrar);
-		
-		label = new JLabel("123456");
-		label.setBounds(40, 147, 70, 15);
-		contentPane.add(label);
 	}
 	
 	private void entrar() {
@@ -130,7 +125,8 @@ public class Login extends JFrame {
 			JOptionPane.showMessageDialog(contentPane, exception.getMessage());
 			return;
 		}
-		new PDV().setVisible(true);
+		PDV pdv = new PDV(usuario.getEmail());
+		pdv.setVisible(true);
 		dispose();
 	}
 }
