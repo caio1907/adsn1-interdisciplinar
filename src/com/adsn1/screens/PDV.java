@@ -133,7 +133,6 @@ public class PDV extends JFrame {
 		mntmRelatorioVendas.setForeground(Color.BLACK);
 		mnRelatorios.add(mntmRelatorioVendas);
 		
-		/*
 		JMenu mnConfiguracoes = new JMenu("Configurações");
 		ImageIcon mnConfiguracoesImageIcon = new ImageIcon(PDV.class.getResource("/com/adsn1/icons/settings.png"));
 		Image mnConfiguracoesImage = mnConfiguracoesImageIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
@@ -153,7 +152,6 @@ public class PDV extends JFrame {
 		mntmConfiguracoes.setIcon(new ImageIcon(mntmConfiguracoesImage));
 		mntmConfiguracoes.setForeground(Color.BLACK);
 		mnConfiguracoes.add(mntmConfiguracoes);
-		*/
 		
 		contentPane = new JPanel();
 
